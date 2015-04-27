@@ -1,0 +1,55 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package productdatabase.p19.pkg8;
+
+/**
+ *
+ * @author Matt
+ */
+public class Product {
+    
+    public char[] name;
+    public double price;
+    public int quantity;
+    private final int NAME_MAX_LENGTH = 30;
+    
+    public Product(char[] name, double price, int quantity){
+        this.name = new char[NAME_MAX_LENGTH];
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        /**
+        try{
+            name.getChars(0, name.length(), this.name, 0);
+            this.price = price;
+            this.quantity = quantity;
+        }
+        catch(java.lang.ArrayIndexOutOfBoundsException e){
+            System.out.println("Length of product name must be under 29 characters: " + e);
+        }
+         **/
+    }
+    public void setPrice(double newPrice){
+        this.price = newPrice;
+    }
+    public void setQuant(int newQuant){
+        this.quantity = newQuant;
+    }
+    public char[] getName(){
+        return this.name;
+    }
+    public double getPrice(){
+        return this.price;
+    }
+    public int getQuant(){
+        return this.quantity;
+    } 
+    @Override
+    public String toString(){
+        String sName = new String(this.name);
+        return sName+"\n"+"Price per Unit: $"+this.price+"\nQuantity: "+this.quantity;
+    }
+}
