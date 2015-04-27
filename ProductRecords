@@ -1,0 +1,62 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package productdatabase.p19.pkg8;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+/**
+ *
+ * @author Matt
+ */
+public class ProductRecords {
+    
+    private RandomAccessFile file;
+    public final int NAME_SIZE = 60, PRICE_SIZE = 8, QUANT_SIZE = 4;
+    public final int RECORD_SIZE = NAME_SIZE+PRICE_SIZE+QUANT_SIZE;
+    
+    public ProductRecords(){
+        file = null;
+    }
+    public void open(String fileName) throws IOException{
+        if(file != null){ file.close(); }
+        file = new RandomAccessFile(fileName, "rw");
+    }
+    public int size() throws IOException{
+        return (int)(file.length()/RECORD_SIZE); 
+    }
+    public void close() throws IOException{
+        if(file != null){ file.close(); }
+        file = null;
+    }
+    public int find(char[] name) throws IOException{
+        for(int i = 0; i < size(); i++){
+            file.seek(i*RECORD_SIZE);
+            char[] tempName = new char[30];
+            for(int j = 0; j < tempName.length; j++){
+                tempName[j] = file.readChar();
+            }
+            if(name == tempName){ return i; }
+        }
+        return -1;
+    }
+    public Product read(int n) throws IOException{
+        file.seek(n*RECORD_SIZE);
+        char[] tempName = new char[30];
+        for(int j = 0; j < tempName.length; j++){
+            tempName[j] = file.readChar();
+        }
+        double tempPrice = file.readDouble();
+        int tempQuant = file.readInt();
+        return new Product(tempName, tempPrice, tempQuant);
+    }
+    public void write(int n, Product tempProd) throws IOException{
+        file.seek(n*RECORD_SIZE);
+        for(int j = 0; j < tempProd.getName().length; j++){
+            file.writeChar(tempProd.getName()[j]);
+        }
+        file.writeDouble(tempProd.getPrice());
+        file.writeInt(tempProd.getQuant());
+    }
+}
