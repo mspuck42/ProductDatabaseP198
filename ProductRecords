@@ -1,11 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package productdatabase.p19.pkg8;
+package productdatabasep198;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 /**
  *
  * @author Matt
@@ -37,7 +34,7 @@ public class ProductRecords {
             for(int j = 0; j < tempName.length; j++){
                 tempName[j] = file.readChar();
             }
-            if(name == tempName){ return i; }
+            if(Arrays.equals(tempName, name)){ return i; }
         }
         return -1;
     }
@@ -53,8 +50,8 @@ public class ProductRecords {
     }
     public void write(int n, Product tempProd) throws IOException{
         file.seek(n*RECORD_SIZE);
-        for(int j = 0; j < tempProd.getName().length; j++){
-            file.writeChar(tempProd.getName()[j]);
+        for(int j = 0; j < tempProd.getNameAr().length; j++){
+            file.writeChar(tempProd.getNameAr()[j]);
         }
         file.writeDouble(tempProd.getPrice());
         file.writeInt(tempProd.getQuant());
