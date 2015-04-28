@@ -1,61 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package productdatabase.p19.pkg8;
-import java.io.IOException;
-import java.util.Scanner;
+package productdatabasep198;
+
 /**
  *
  * @author Matt
  */
+import java.io.IOException;
+import java.util.Scanner;
 public class ProductDatabaseP198 {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException{
-        
-        Scanner in = new Scanner(System.in);
-        ProductRecords records = new ProductRecords();
-        try{
-            records.open("product_records.bin");
-            
-            boolean done = false;
-            while(!done){
-                System.out.print("\nProduct Record to adjust (lower case): ");
-                String sName = in.nextLine().toLowerCase();
-                System.out.print("\nSet the price per unit: $");
-                double pPrice = in.nextDouble();
-                System.out.print("\nSet the quantity of units: ");
-                int pQuant = in.nextInt();
-                char[] pName = new char[30];
-                sName.getChars(0, sName.length(), pName, 0);
                 
-                int pos = records.find(pName);
-                Product product;
-                if(pos >= 0){
-                    product = records.read(pos);
-                    product.setPrice(pPrice);
-                    product.setQuant(pQuant);
-                    System.out.println("Updated Product:\n---------------\n"+product.toString());
-                }
-                else{
-                    product = new Product(pName, pPrice, pQuant);
-                    pos = records.size();
-                    System.out.println("New Product Added:\n---------------\n"+product.toString());
-                }
-                records.write(pos, product);
-                
-                System.out.print("\nAdjust or Add another Product? (Y/N): ");
-                String input = in.next();
-                if(input.equalsIgnoreCase("N")){ done = true; }
-            }
-        }
-        finally{
-            records.close();
-        }
+        menu();
+
     }
     public static void menu() throws IOException{
         
@@ -68,8 +27,9 @@ public class ProductDatabaseP198 {
                     + "Press 2 to Add a new record or Update an existing record's information\n";
             
             System.out.println("Product Records\n----------------------------------");
+            boolean done = false;
             
-            while(true){
+            while(!done){
                 
                 System.out.print(mainMenu);
                 do{
@@ -83,9 +43,73 @@ public class ProductDatabaseP198 {
                 
                 switch(sel){
                     case 1 : {
-                        
+                        System.out.print("\nPlease enter a product name to search for: ");
+                        String tempName;
+                        do{
+                            tempName = in.next().toLowerCase();
+                            if(tempName.length() > 30){ System.out.print("\nProduct name must be less than 30 characters!"); }
+                        }while(tempName.length() > 30);
+                        char[] pName = new char[30];
+                        tempName.getChars(0, tempName.length(), pName, 0);
+                        int f = records.find(pName);
+                        if(f < 0){
+                            System.out.print("\nRecord not found!");
+                        }
+                        else{
+                            System.out.print("\nRecord found at position " + f + ":");
+                            Product tempProd = records.read(f);
+                            System.out.println(tempProd);
+                        }
                         break;
                     }
+                    case 2 : {
+                        String tempName;
+                        do{
+                            System.out.print("\nEnter a product name to adjust or add to the record: ");
+                            tempName = in.next().toLowerCase();
+                            //in.next();
+                            if(tempName.length() > 30){ System.out.print("\nProduct name must be less than 30 characters!"); }
+                        }while(tempName.length() > 30);
+                        char[] pName = new char[30];
+                        tempName.getChars(0, tempName.length(), pName, 0);
+                        int f = records.find(pName);
+                        Product newProd = new Product();
+                        if(f < 0){
+                            System.out.print("\nAdding new record: " + tempName);
+                            System.out.print("\nSet the price per unit: $");
+                            double pPrice = in.nextDouble();
+                            System.out.print("\nSet the quantity of units: ");
+                            int pQuant = in.nextInt();
+                            newProd = new Product(pName, pPrice, pQuant);
+                            f = records.size();
+                        }
+                        else{
+                            newProd = records.read(f);
+                            System.out.print("\nAdjusting record: ");
+                            System.out.print(newProd);
+                            System.out.print("\nSet the price per unit: $");
+                            double pPrice = in.nextDouble();
+                            System.out.print("\nSet the quantity of units: ");
+                            int pQuant = in.nextInt();
+                            newProd.setPrice(pPrice);
+                            newProd.setQuant(pQuant);
+                        }
+                        records.write(f, newProd);
+                        System.out.print("\nRecord updated/added at position " + f + ":");
+                        System.out.print(newProd);
+                        break;
+                    }
+                }
+                System.out.print("\nPerform another action? Press 1 for yes, 2 for no: ");
+                int confirm;
+                do{
+                    confirm = in.nextInt();
+                    if(confirm < 1 || confirm > 2){
+                        System.out.print("\nPlease enter a valid selection: ");
+                    }
+                }while(confirm < 1 || confirm > 2);
+                if(confirm == 2){
+                    done = true;
                 }
             }
         
